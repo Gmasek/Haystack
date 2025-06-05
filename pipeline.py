@@ -1,6 +1,7 @@
 from haystack import Pipeline
 from haystack.dataclasses import ChatMessage
 from haystack.components.generators.chat import OpenAIChatGenerator
+
 from haystack.utils import Secret
 from haystack import component
 from bson import ObjectId
@@ -21,12 +22,11 @@ class MongoDataFetcher:
     @component.output_types(messages=list[ChatMessage])
     def run(self, id: str = None, res_to_fix: list[ChatMessage] = None):
         if id is not None and res_to_fix == None:
-            print("idelepbe")
-            document = self.collection.find_one({"_id": ObjectId(id)})
-            if not document:
-                raise LookupError
+            # document = self.collection.find_one({"_id": ObjectId(id)})
+            # if not document:
+            #    raise LookupError
 
-            name = document["name"]
+            name = id
             messages = [
                 ChatMessage.from_system(
                     "You are a helpful and motiviating assistant that creates motivational messages. Try to keep them short. Suggest some low intesity activity for them to do "
@@ -36,7 +36,6 @@ class MongoDataFetcher:
             return {"messages": messages}
 
         if res_to_fix != None:
-            print(id)
             messages = [
                 ChatMessage.from_system(
                     "You are a message shortener tool, shorten messages that are being sent to you to less then 120 chars "
@@ -51,7 +50,6 @@ class MongoDataFetcher:
 @component
 class OutputValidator:
     def __init__(self):
-
         pass
 
     @component.output_types(
@@ -64,10 +62,8 @@ class OutputValidator:
             motivation = reply[0].text
 
             if validate(motivation):
-                print("belep")
                 return {"valid_replies": reply}
             else:
-                print("belep23")
                 return {"invalid_replies": reply}
         except ValueError as e:
 
@@ -83,13 +79,13 @@ def validate(msg: str) -> bool:
             whitespaceCount += 1
 
     if whitespaceCount > 20:
-        print("False")
+
         return False
     elif whitespaceCount < 20 and letter_count < 130:
-        print("True")
+
         return True
     else:
-        print("False")
+
         return False
 
 

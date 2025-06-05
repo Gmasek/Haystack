@@ -4,5 +4,5 @@ services:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      - OPENAI_API_KEY=your-key-if-needed
+    env_file:
+      - .env
