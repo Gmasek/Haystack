@@ -4,3 +4,8 @@ local run wo docker
 w docker 
 
 docker-compose up --build
+
+.env file 
+```shell
+OPENAI_API_KEY=key
+```
